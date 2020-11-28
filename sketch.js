@@ -55,7 +55,7 @@ function preload() {
     hulkimg = createSprite(900, 528)
     fireleftimg = createSprite(600,200)
     fireleftimg .addImage(fireleft);
-    firerightimg = createSprite(600,528)
+    firerightimg = createSprite(600,200)
     firerightimg.addImage(fireright);
     invisibleground = createSprite(600,580,1200,40);
     invisibleground.visible = false;
@@ -105,6 +105,7 @@ function preload() {
 
     if ( keyDown('x') ) {
         rfire();
+        firerightimg.y = 528;
         
         }
         if (hulkimg.x > width) {
@@ -113,23 +114,22 @@ function preload() {
         if (hulkimg.x < 0) {
             hulkimg.x = 10
         }
-
-       demonspawn();
-    
-        
-    hulkimg.collide(invisibleground);
-    hulkimg.collide(logimg);
+        hulkimg.collide(invisibleground);
+        hulkimg.collide(logimg);
         hulkimg.collide(logimg1);
-        drawSprites();
+       demonspawn();
+  drawSprites();
         textSize(25);
                 textFont('Supercell-magic-webfont')
-          fill('black')
+                fill('black')
         text('Score ' + ':' + score, 1070, 50) 
         if (demongroup.isTouching(fireleftimg) || demongroup.isTouching(firerightimg)) {
-            score = score + 50;
-            demonimg.visible = false;
-            fireleftimg.visible = false;
+            demonimg.destroy();
+            fireleftimg.destroy();
+        
             console.log(score)
+            score = score + 50;
+            
         }
 
         
@@ -177,15 +177,28 @@ function demonspawn() {
         demonimg.addImage(demon)
 
         if (demonimg.x < 350) {
+            console.log(demonimg.x)
             demonimg.velocityX = 4;
-
+            
         }
 
         if (demonimg.x > 350) {
+            console.log(demonimg.x)
+            demonimg.velocityX = -4;
+            
+        }     
+        if (demonimg.x == 10) {
+            console.log(demonimg.x)
+            demonimg.x = 50
+            demonimg.velocityX = 4;
+
+        }
+        if (demonimg.x == 1150) {
+            console.log(demonimg.x)
+            demonimg.x = 1150
             demonimg.velocityX = -4;
 
         }
-
         demongroup.add(demonimg)
     }
 }
