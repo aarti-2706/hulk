@@ -24,9 +24,10 @@ var invisibleground;
 var launcher,launcherimg;
 var score=0;
 var demongroup;
-
-
-
+var r;
+var gamestate = 1;
+var gameover;
+var gameoverimg;
 
 function preload() {
     backgroundg = loadImage("images/background.png")
@@ -40,6 +41,7 @@ function preload() {
     fireright = loadImage("images/right-fire.png")
     demon = loadImage("images/demon.png")
     launcher = loadImage("images/origin.png")
+    gameover = loadImage("images/gameover.png")
 }
 
     function setup() {
@@ -63,76 +65,109 @@ function preload() {
     firerightimg.visible = false;
     launcherimg = createSprite(600,528)
     launcherimg.addImage(launcher);
-    demongroup = createGroup()
+        demongroup = createGroup()
+        gameoverimg = createSprite(600, 300)
+        gameoverimg.addImage(gameover);
+        gameoverimg.visible = false;
     }
 
-    function draw() {
+function draw() {
     background('yellow');
+    if (gamestate == 1) {
 
-   
-    hulkimg.addImage(character1);
-    
-
-    if(keyDown("up") && hulkimg.y >= 435) {
-    hulkimg.velocityY = -12;
-    }
-    
-    hulkimg.velocityY = hulkimg.velocityY + 0.8
+      
+        hulkimg.addImage(character1);
 
 
-    
-    // if (keyDown('up') && hulkimg.y>300) {
-    //    hulkimg.velocityY=-6 
+        if (keyDown("up") && hulkimg.y >= 435) {
+            hulkimg.velocityY = -12;
+        }
 
-    // }
-
-    if (hulkimg.y <300) {
-       hulkimg.velocityY = hulkimg.velocityY+1
-    }
-   
-    if (keyDown('left')) {
-     lhulk();
-    }
-    if (keyDown('right')) {
-    rhulk();
-    }
-    
-    if ( keyDown('z') ) {
-    lfire();
-    fireleftimg.y = 528;
-    }
+        hulkimg.velocityY = hulkimg.velocityY + 0.8
 
 
-    if ( keyDown('x') ) {
-        rfire();
-        firerightimg.y = 528;
-        
+
+        // if (keyDown('up') && hulkimg.y>300) {
+        //    hulkimg.velocityY=-6 
+
+        // }
+
+        if (hulkimg.y < 300) {
+            hulkimg.velocityY = hulkimg.velocityY + 1
+        }
+
+        if (keyDown('left')) {
+            lhulk();
+        }
+        if (keyDown('right')) {
+            rhulk();
+        }
+
+        if (keyDown('z')) {
+            lfire();
+            fireleftimg.y = 528;
+        }
+
+
+        if (keyDown('x')) {
+            rfire();
+            firerightimg.y = 528;
+
         }
         if (hulkimg.x > width) {
-            hulkimg.x=1150
+            hulkimg.x = 1150
         }
         if (hulkimg.x < 0) {
             hulkimg.x = 10
         }
+
+        if (keyDown('up')) {
+            hulkimg.velocityY = -5
+            if (demongroup.isTouching(hulkimg)) {
+                demonimg.destroy();
+
+            }
+        }
+        if (demongroup.isTouching(hulkimg)) {
+            gamestate = 0;
+        }
+
+
         hulkimg.collide(invisibleground);
         hulkimg.collide(logimg);
         hulkimg.collide(logimg1);
-       demonspawn();
-  drawSprites();
+        demonspawn();
+        drawSprites();
+
+
+
         textSize(25);
-                textFont('Supercell-magic-webfont')
-                fill('black')
-        text('Score ' + ':' + score, 1070, 50) 
+        textFont('Supercell-magic-webfont')
+        fill('black')
+        text('Score ' + ':' + score, 1070, 50)
         if (demongroup.isTouching(fireleftimg) || demongroup.isTouching(firerightimg)) {
             demonimg.destroy();
             fireleftimg.destroy();
-        
+
             console.log(score)
             score = score + 50;
-            
+
+
+
         }
 
-        
+    }
+    else if (gamestate == 0) {
+        gameoverimg.visible=true
+       // if (mousePressedOver(restart)) {
+    //        reset();
+       // }
+    }
+    
+
+}
+function reset() {
+
 }
 
 function lhulk() {
@@ -171,37 +206,38 @@ fireleftimg.velocityX=-5;
 
 function demonspawn() {
     if (frameCount % 300 == 0) {
-        var r = Math.round(random(50, 800))
+        r = Math.round(random(50, 800))
         demonimg = createSprite(50, 528, 10, 10)
         demonimg.x = r
         demonimg.addImage(demon)
-
+   
         if (demonimg.x < 350) {
-            console.log(demonimg.x)
-            demonimg.velocityX = 4;
-            
-        }
+           demonimg.velocityX = 4;
+           ///* if (demonimg.x > width) {
+           //     demonimg.x = 1150
+           //     demonimg.velocityX = -4;
+
+           ///* }
+
+
+
+
+}
 
         if (demonimg.x > 350) {
-            console.log(demonimg.x)
             demonimg.velocityX = -4;
-            
-        }     
-        if (demonimg.x == 10) {
-            console.log(demonimg.x)
-            demonimg.x = 50
-            demonimg.velocityX = 4;
+          // /* if (demonimg.x < 0) {
+          //      demonimg.x = 50
+          //      demonimg.velocityX = 4;
 
-        }
-        if (demonimg.x == 1150) {
-            console.log(demonimg.x)
-            demonimg.x = 1150
-            demonimg.velocityX = -4;
+          ///*  }   
 
         }
         demongroup.add(demonimg)
+
     }
 }
+
    // function fireunlimit() {
     //fireleftimg=createSprite(hulkimg.x,hulkimg.y,10,10)
    // fireleftimg.velocityX=-9
